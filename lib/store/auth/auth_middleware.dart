@@ -33,6 +33,7 @@ class AuthMiddleware implements MiddlewareClass<ApplicationState>{
         store.dispatch(AuthSuccessAction(user));
         store.dispatch(NavigateToAction.replace("/products-home"));
       } on ApiException catch (e){
+        store.dispatch(NavigateToAction.replace("/products-home"));
         store.dispatch(AuthFailedAction(e.message));
       }
     }

@@ -175,7 +175,9 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                    const KYCDocument()))
+                                    const KYCDocument()
+                                )
+                            )
                           });
                     },
                     style: ElevatedButton.styleFrom(

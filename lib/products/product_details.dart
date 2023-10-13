@@ -1,11 +1,9 @@
 import 'dart:math';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:fin_app/products/cart_view_model.dart';
 import 'package:fin_app/products/product_model.dart';
 import 'package:fin_app/store/application_state.dart';
-import 'package:fin_app/store/cart/cart_action.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -70,16 +68,15 @@ class ProductItem extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: SizedBox(
                   height: 40,
-                  child: StoreConnector<ApplicationState, VoidCallback>(
-                    converter: (store) {
-                      return () => store.dispatch(AddToCartAction(product));
-                    },
-                    builder: (context, converter) {
+                  child: StoreConnector<ApplicationState, CartViewModel>(
+                    converter: (store) => CartViewModel.converter(store),
+                    builder: (context, viewModel) {
                       return Visibility(
-                        visible: true,
+                        visible: !viewModel.cartContainsProduct(product),
                         child: OutlinedButton(
                             onPressed: () {
-                              converter();
+                              showProductAddedToast();
+                              viewModel.addToCart(product);
                             },
                             style: OutlinedButton.styleFrom(
                                 minimumSize: const Size(100, 40),
@@ -206,7 +203,7 @@ class CartItemsView extends StatelessWidget {
                       itemCount: viewModel.getCartItemsCount(),
                       itemBuilder: (context, index) {
                         return Card(
-                          color: Colors.blueGrey.shade200,
+                          color: Colors.grey.shade50,
                           elevation: 5.0,
                           child: Padding(
                             padding: const EdgeInsets.all(4.0),
@@ -258,7 +255,10 @@ class CartItemsView extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: OutlinedButton(
                     onPressed: (){
-                      viewModel.takeUpProducts();
+                      if(viewModel.getCartItemsCount() > 0) {
+                        viewModel.takeUpProducts();
+
+                      }
                     },
                     style: OutlinedButton.styleFrom(
                       minimumSize: const Size(300, 50),
@@ -276,4 +276,16 @@ class CartItemsView extends StatelessWidget {
         },
         converter: (store) => CartViewModel.converter(store));
   }
+}
+
+void showProductAddedToast(){
+  Fluttertoast.showToast(
+      msg: "Product added to cart",
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 1,
+      backgroundColor: Colors.black,
+      textColor: Colors.white,
+      fontSize: 16.0
+  );
 }

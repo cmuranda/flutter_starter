@@ -1,5 +1,6 @@
 import 'package:fin_app/api/api.dart';
 import 'package:fin_app/auth/sign_in.dart';
+import 'package:fin_app/fulfilment/fulfilment_results_view.dart';
 import 'package:fin_app/kyc/kyc_document.dart';
 import 'package:fin_app/products/product_details.dart';
 import 'package:fin_app/products/product_home_page.dart';
@@ -53,11 +54,11 @@ class App extends StatelessWidget {
           return buildRoute(settings, const CartItemsView());
         case "/kyc-identity":
           return buildRoute(settings, const KYCIdentityCard());
+        case "/fulfilment-results":
+          return buildRoute(settings, FulfilmentResultsView());
 
         default:
-          // return buildRoute(settings, const HomePage(title: 'Finance App'));
-          return buildRoute(settings, const KYCDocument());
-
+          return buildRoute(settings, const HomePage(title: 'Finance App'));
       }
     }
 

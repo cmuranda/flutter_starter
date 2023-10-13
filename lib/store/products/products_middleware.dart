@@ -5,6 +5,7 @@ import 'package:fin_app/auth/auth_model.dart';
 import 'package:fin_app/store/application_state.dart';
 import 'package:fin_app/store/auth/auth_middleware.dart';
 import 'package:fin_app/store/products/products_action.dart';
+import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:redux/redux.dart';
 
 class ProductsMiddleware implements MiddlewareClass<ApplicationState>{
@@ -43,6 +44,13 @@ class ProductsMiddleware implements MiddlewareClass<ApplicationState>{
             "productIds": productIds
           })
       );
+      Future.delayed(const Duration(milliseconds: 1500), (){
+        store.dispatch(
+            NavigateToAction(
+                "/fulfilment-results"
+            )
+        );
+      });
     }
 
   }

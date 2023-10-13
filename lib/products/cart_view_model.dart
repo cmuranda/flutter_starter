@@ -25,6 +25,14 @@ class CartViewModel{
     );
   }
 
+  void addToCart(Product product){
+    _store.dispatch(AddToCartAction(product));
+  }
+
+  bool cartContainsProduct(Product product){
+    return cartProducts.contains(product);
+  }
+
   int getCartItemsCount() => cartProducts.length;
   List<Product> getCartItemsList() => cartProducts.toList();
 

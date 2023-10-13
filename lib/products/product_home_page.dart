@@ -117,10 +117,6 @@ class ProductCategoryView extends StatelessWidget{
                 fontSize: 15,
               ),
             ),
-            TextButton(
-                onPressed: (){},
-                child: const Text("More")
-            )
           ],
         ),
         SizedBox(
@@ -135,52 +131,4 @@ class ProductCategoryView extends StatelessWidget{
       ],
     );
   }
-
 }
-
-
-/*return StoreConnector<ApplicationState, ProductsViewModel>(
-        converter: (store) => ProductsViewModel.converter(store),
-        onInitialBuild: (viewModel) => viewModel.loadProducts(),
-        builder: (context, viewModel) {
-          if (viewModel.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(
-                semanticsLabel: 'Circular progress indicator',
-              ),
-            );
-          }
-          else {
-            return Scaffold(
-              body: CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    backgroundColor: Theme.of(context).primaryColor,
-                    collapsedHeight: 70,
-                    expandedHeight: 250,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                      background: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: RadialGradient(
-                                colors: [
-                                  Theme.of(context).primaryColor,
-                                  Colors.blue.shade400,
-                                  Theme.of(context).colorScheme.inversePrimary,
-                                  Colors.blue.shade50
-                                ],
-                              radius: 2
-                            )
-                          )
-                      ),
-                      title: const Text("Explore our Products"),
-                    ),
-                  ),
-                  ProductsListView(viewModel.products)
-                ],
-              ),
-            );
-          }
-        });
-  }*/
-
