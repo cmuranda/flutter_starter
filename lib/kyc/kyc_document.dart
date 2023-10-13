@@ -2,8 +2,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 
-class KYCDocument extends StatefulWidget {
+import '../products/product_home_page.dart';
 
+class KYCDocument extends StatefulWidget {
   const KYCDocument({super.key});
 
   @override
@@ -12,13 +13,19 @@ class KYCDocument extends StatefulWidget {
 
 class _KYCDocumentState extends State<KYCDocument> {
   List<PlatformFile> uploadedDocuments = [];
-  
-  updateFile(PlatformFile document){
+  var loading = false;
+
+  updateFile(PlatformFile document) {
     setState(() {
       uploadedDocuments.add(document);
     });
   }
-  
+
+  showLoading() {
+    setState(() {
+      loading = !loading;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,34 +33,54 @@ class _KYCDocumentState extends State<KYCDocument> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         centerTitle: false,
-        title: Text(uploadedDocuments.isEmpty ? "Documents upload" : "Document Preview"),
+        title: Text(uploadedDocuments.isEmpty
+            ? "Documents upload"
+            : "Document Preview"),
       ),
-
-      body: uploadedDocuments.isEmpty?
-      getUploadDocumentView() :
-      Center(
-        child: PDFView(
-          filePath: uploadedDocuments.first.path,
-        ),
-      ),
-      floatingActionButton: uploadedDocuments.isEmpty? null :
-       Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              minimumSize: const Size(250, 50),
-            ),
-            child: const Text(
-              "Continue",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18
+      body: uploadedDocuments.isEmpty
+          ? getUploadDocumentView()
+          : Center(
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  PDFView(
+                    filePath: uploadedDocuments.first.path,
+                  ),
+                  if (loading)
+                    Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.all(100),
+                      child: CircularProgressIndicator(),
+                    ),
+                ],
               ),
-            )
-        ),
-      ),
+            ),
+      floatingActionButton: uploadedDocuments.isEmpty
+          ? null
+          : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: ElevatedButton(
+                  onPressed: () {
+                    showLoading();
+                    Future.delayed(
+                        const Duration(milliseconds: 1500),
+                        () => {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const ProductsHomePage()))
+                            });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    minimumSize: const Size(250, 50),
+                  ),
+                  child: const Text(
+                    "Continue",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  )),
+            ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
@@ -91,9 +118,7 @@ class _KYCDocumentState extends State<KYCDocument> {
                 borderOnForeground: true,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(35),
-                    side:
-                    BorderSide(width: 4, color: Colors.orange.shade600)
-                ),
+                    side: BorderSide(width: 4, color: Colors.orange.shade600)),
                 child: const Center(
                     child: SizedBox(
                         height: 65,
@@ -123,24 +148,20 @@ class _KYCDocumentState extends State<KYCDocument> {
           ),
           Expanded(
               child: Divider(
-                color: Colors.grey.shade200,
-                height: 40,
-              )
-          ),
+            color: Colors.grey.shade200,
+            height: 40,
+          )),
         ],
       ),
     );
   }
 
   void pickFile() async {
-    final FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc']
-    );
-    if(result != null){
+    final FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf', 'doc']);
+    if (result != null) {
       var file = result.files.first;
       updateFile(file);
     }
   }
 }
-

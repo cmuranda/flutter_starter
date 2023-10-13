@@ -69,7 +69,7 @@ void checkUserLoggedIn(Store<ApplicationState> store){
     );
     return;
   }
-  if (JwtDecoder.isExpired(jwtToken!)){
+  if (JwtDecoder.isExpired(jwtToken)){
     displayToastMessage("Session expired please login again.");
     store.dispatch(
         NavigateToAction(

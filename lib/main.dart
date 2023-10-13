@@ -52,11 +52,11 @@ class App extends StatelessWidget {
         case "/cart":
           return buildRoute(settings, const CartItemsView());
         case "/kyc-identity":
-          return buildRoute(settings, KYCIdentityCard());
+          return buildRoute(settings, const KYCIdentityCard());
 
         default:
           // return buildRoute(settings, const HomePage(title: 'Finance App'));
-          return buildRoute(settings, KYCIdentityCard());
+          return buildRoute(settings, const KYCDocument());
 
       }
     }

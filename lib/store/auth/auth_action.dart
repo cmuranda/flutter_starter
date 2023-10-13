@@ -1,5 +1,4 @@
 
-import 'dart:html';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:fin_app/auth/auth_model.dart';

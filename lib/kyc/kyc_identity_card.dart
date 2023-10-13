@@ -1,7 +1,11 @@
 import 'dart:io';
 
+import 'package:fin_app/kyc/kyc_document.dart';
+import 'package:fin_app/store/application_state.dart';
+import 'package:fin_app/store/auth/auth_action.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_picker/image_picker.dart';
 
 class KYCIdentityCard extends StatefulWidget {
@@ -15,12 +19,20 @@ class KYCIdentityCard extends StatefulWidget {
 class _KYCIdentityCardState extends State<KYCIdentityCard> {
   final ImagePicker picker = ImagePicker();
   final List<XFile> uploadedImage = [];
+  bool loading = false;
   
   updateUploadImage(XFile image){
     setState(() {
       uploadedImage.add(image);
     });
   }
+
+  showLoading() {
+    setState(() {
+      loading = true;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -149,21 +161,35 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
                 child: Divider(
               color: Colors.grey.shade200,
             )),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    minimumSize: const Size(250, 50),
-                  ),
-                  child: const Text(
-                    "Continue",
-                    style: TextStyle(
-                        color: Colors.white,
-                      fontSize: 18
+            StoreConnector<ApplicationState, VoidCallbackAction>(
+              converter: (store) => store.dispatch(AuthUploadingKYCImageAction(uploadedImage.last)),
+              builder: (context, converter) => Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: ElevatedButton(
+                    onPressed: () {
+                      showLoading();
+                      Future.delayed(
+                          const Duration(milliseconds: 1500),
+                              () => {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                    const KYCDocument()))
+                          });
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange,
+                      minimumSize: const Size(250, 50),
                     ),
-                  )),
+                    child: const Text(
+                      "Continue",
+                      style: TextStyle(
+                          color: Colors.white,
+                        fontSize: 18
+                      ),
+                    )),
+              ),
             )
           ],
         ),
