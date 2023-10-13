@@ -39,7 +39,6 @@ class AuthMiddleware implements MiddlewareClass<ApplicationState>{
 
     else if (action is SignUpAction){
       try{
-        print("Loading: ${store.state.authState.isLoading}");
         final customer = await api.signUpUser(action.signUpParameters);
         final signInResult = await api.signInUser(action.signUpParameters);
         var user = AuthUser.fromCustomerJwt(

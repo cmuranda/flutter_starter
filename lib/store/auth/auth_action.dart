@@ -1,5 +1,9 @@
 
+import 'dart:html';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:fin_app/auth/auth_model.dart';
+import 'package:image_picker/image_picker.dart';
 
 
 
@@ -50,3 +54,17 @@ class AuthLoadingAction extends AuthAction{
   String toString() => "$AuthLoadingAction";
 }
 
+class AuthUploadingKYCImageAction extends AuthAction{
+
+  AuthUploadingKYCImageAction(XFile file);
+
+  @override
+  String toString() => "$AuthUploadingKYCImageAction";
+}
+
+class AuthUploadingKYCDocumentAction extends AuthAction{
+  AuthUploadingKYCDocumentAction(PlatformFile file);
+
+  @override
+  String toString() => "$AuthUploadingKYCDocumentAction";
+}

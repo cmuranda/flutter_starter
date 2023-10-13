@@ -1,19 +1,40 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class KYCIdentityCard extends StatelessWidget {
-  final ImagePicker picker = ImagePicker();
+class KYCIdentityCard extends StatefulWidget {
 
-  KYCIdentityCard({super.key});
+  const KYCIdentityCard({super.key});
+
+  @override
+  State<KYCIdentityCard> createState() => _KYCIdentityCardState();
+}
+
+class _KYCIdentityCardState extends State<KYCIdentityCard> {
+  final ImagePicker picker = ImagePicker();
+  final List<XFile> uploadedImage = [];
+  
+  updateUploadImage(XFile image){
+    setState(() {
+      uploadedImage.add(image);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        centerTitle: false,
-        title: const Text("ID Card upload"),
+          backgroundColor: Colors.white,
+          leading: BackButton(
+            color: Theme.of(context).primaryColor,
+          ),
+          title: const LinearProgressIndicator(
+            minHeight: 10,
+            semanticsLabel: "Login Information",
+            value: .67,
+          )
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -29,19 +50,23 @@ class KYCIdentityCard extends StatelessWidget {
                     fontFamily: 'Urbanist'),
               ),
             ),
-            const Padding(
+            if (uploadedImage.isEmpty)
+              const Padding(
               padding: EdgeInsets.symmetric(vertical: 9.0),
               child: Text(
                 "Regulations require you to upload a national identity card. Don't worry, your data will stay safe and private",
                 style: TextStyle(fontSize: 18, fontFamily: 'Urbanist'),
               ),
             ),
-            const SizedBox(height: 10),
+
+            if (uploadedImage.isEmpty)
+              const SizedBox(height: 10),
             GestureDetector(
               onTap: () {
                 pickGalleryImage();
               },
-              child: SizedBox(
+              child: uploadedImage.isEmpty?
+              SizedBox(
                 height: 200,
                 child: Card(
                   borderOnForeground: true,
@@ -71,6 +96,10 @@ class KYCIdentityCard extends StatelessWidget {
                             ],
                           ))),
                 ),
+              ) :
+              SizedBox(
+                height: 350,
+                  child: Image.file(File(uploadedImage.last.path))
               ),
             ),
             const SizedBox(
@@ -97,32 +126,31 @@ class KYCIdentityCard extends StatelessWidget {
                 ))
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            OutlinedButton.icon(
-              onPressed: () {
-                pickCameraImage();
-              },
-              style: OutlinedButton.styleFrom(
-                  minimumSize: const Size(200, 50),
-                  side: const BorderSide(width: 2, color: Colors.orange)),
-              icon: const Icon(
-                Icons.camera_alt_outlined,
-                color: Colors.orange,
-              ),
-              label: Text(
-                "Open Camera and take photo",
-                style: TextStyle(color: Colors.grey.shade700),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: OutlinedButton.icon(
+                onPressed: () {
+                  pickCameraImage();
+                },
+                style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(200, 50),
+                    side: const BorderSide(width: 2, color: Colors.orange)),
+                icon: const Icon(
+                  Icons.camera_alt_outlined,
+                  color: Colors.orange,
+                ),
+                label: Text(
+                  "Open Camera and take photo",
+                  style: TextStyle(color: Colors.grey.shade700),
+                ),
               ),
             ),
             Expanded(
                 child: Divider(
               color: Colors.grey.shade200,
-              height: 40,
             )),
             Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(10.0),
               child: ElevatedButton(
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
@@ -145,11 +173,15 @@ class KYCIdentityCard extends StatelessWidget {
 
   void pickGalleryImage() async {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    print(image);
+    if(image != null){
+      updateUploadImage(image);
+    }
   }
 
   void pickCameraImage() async {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
-    print(image);
+    if(image != null){
+      updateUploadImage(image);
+    }
   }
 }

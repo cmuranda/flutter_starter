@@ -6,8 +6,17 @@ final authReducer = combineReducers<AuthState>([
   TypedReducer<AuthState, SignInAction>(onSignIn),
   TypedReducer<AuthState, AuthLoadingAction>(onLoading),
   TypedReducer<AuthState, AuthSuccessAction>(onAuthSuccess),
-  TypedReducer<AuthState, AuthFailedAction>(onAuthFailure)
+  TypedReducer<AuthState, AuthFailedAction>(onAuthFailure),
+  TypedReducer<AuthState, AuthUploadingKYCImageAction>(onUploadingKYCImageAction),
+  TypedReducer<AuthState, AuthUploadingKYCDocumentAction>(onUploadingKYCImageAction)
 ]);
+
+AuthState onUploadingKYCImageAction(
+    AuthState state,
+    action
+    ){
+  return state.copyWith(isLoading: true);
+}
 
 AuthState onLoading(
     AuthState state,

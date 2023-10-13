@@ -30,16 +30,18 @@ class SignUpPage extends StatelessWidget{
           title: const LinearProgressIndicator(
             minHeight: 10,
             semanticsLabel: "Login Information",
-            value: .25,
+            value: .34,
           )
 
       ),
 
       body: StoreConnector<ApplicationState, AuthViewModel>(
           converter: (store) => AuthViewModel.converter(store),
-          builder: (context, viewModel) => !viewModel.isLoading?
+          builder: (context, viewModel) => viewModel.isLoading?
               const Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(
+                  color: Colors.orange,
+                ),
               )
           : SingleChildScrollView(
           child: Padding(
@@ -52,15 +54,25 @@ class SignUpPage extends StatelessWidget{
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: GenericTextField('First Name', firstNameFieldController),
+                        child: GenericTextField(
+                            hintString: 'First Name',
+                            textFieldController: firstNameFieldController
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: GenericTextField('Last Name', lastNameFieldController),
+                        child: GenericTextField(
+                            hintString: 'Last Name',
+                            textFieldController: lastNameFieldController
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: GenericTextField('ID Number', idFieldController),
+                        child: GenericTextField(
+                            hintString: 'ID Number',
+                            textFieldController: idFieldController,
+                            isNumeric: true
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(5.0),

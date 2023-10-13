@@ -13,6 +13,7 @@ import 'package:flutter_redux_navigation/flutter_redux_navigation.dart';
 import 'package:redux/redux.dart';
 
 import 'home_page.dart';
+import 'kyc/kyc_identity_card.dart';
 
 void main() {
   runApp(App());
@@ -50,10 +51,12 @@ class App extends StatelessWidget {
           return buildRoute(settings, const SignInPage());
         case "/cart":
           return buildRoute(settings, const CartItemsView());
+        case "/kyc-identity":
+          return buildRoute(settings, KYCIdentityCard());
 
         default:
-          return buildRoute(settings, const HomePage(title: 'Finance App'));
-          //return buildRoute(settings, KYCDocument());
+          // return buildRoute(settings, const HomePage(title: 'Finance App'));
+          return buildRoute(settings, KYCIdentityCard());
 
       }
     }
