@@ -29,5 +29,5 @@ class AuthViewModel{
     _store.dispatch(SignUpAction(signUpParameters));
   }
 
-  void signIn(usernamePassword) => _store.dispatch(SignInAction(usernamePassword));
+  void signInUser(usernamePassword) => _store.dispatch(SignInAction(usernamePassword));
 }

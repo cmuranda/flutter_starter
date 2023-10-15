@@ -1,5 +1,7 @@
 
 import 'package:fin_app/auth/auth_model.dart';
+import 'package:fin_app/auth/auth_view_model.dart';
+import 'package:fin_app/auth/sign_up.dart';
 import 'package:fin_app/store/application_state.dart';
 import 'package:fin_app/store/auth/auth_action.dart';
 import 'package:flutter/material.dart';
@@ -22,46 +24,67 @@ class SignInPage extends StatelessWidget{
           title: const Text("Sign In")
       ),
       body: Center(
-        child: StoreConnector<ApplicationState, VoidCallback>(
-          converter: (store){
-            var usernamePassword = SignInModel(
-                emailFieldController.text.trim(),
-                passwordFieldController.text.trim()
-            );
-            return () => store.dispatch(SignInAction(usernamePassword));
-          },
-          builder: (context, callback) {
-            return Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                EmailField(emailFieldController),
-                PasswordField(passwordFieldController),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(180,50),
-                          foregroundColor: Colors.black,
-                          backgroundColor: Colors.grey
-                      ),
-                    onPressed: () {
-                      // Validate returns true if the form is valid, or false otherwise.
-                      if (formKey.currentState!.validate()) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Signing In')),
-                        );
-                        callback();
-                      }
-                    },
-                    child: const Text('Sign In'),
+        child: StoreConnector<ApplicationState, AuthViewModel>(
+          converter: (store) => AuthViewModel.converter(store),
+          builder: (context, viewModel) {
+            return viewModel.isLoading?
+                const CircularProgressIndicator(
+                  color: Colors.orange,
+                )
+              : Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: EmailField(emailFieldController),
                   ),
-                ),
-              ],
-            ),
-          );
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: PasswordField(passwordFieldController),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(200,50),
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.orange
+                      ),
+                      onPressed: () {
+                        var usernamePassword = SignInModel(
+                            emailFieldController.text.trim(),
+                            passwordFieldController.text.trim()
+                        );
+                        if (formKey.currentState!.validate()) {
+                          viewModel.signInUser(usernamePassword);
+                        }
+                      },
+                      child: const Text('Sign In'),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: (){
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SignUpPage())
+                      );
+                    },
+                    child: const Text(
+                      "Sign up",
+                      style: TextStyle(
+                          decoration: TextDecoration.underline
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          ),
+            );
         })
       ),
     );

@@ -16,14 +16,14 @@ class HomePage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            const SizedBox(height: 20,),
+            const SizedBox(height: 60,),
             const Padding(
-              padding: EdgeInsets.all(20.0),
+              padding: EdgeInsets.all(10.0),
               child: Text(
                 'Finance App',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 40,
+                  fontSize: 45,
                   fontFamily: 'PTSansNarrow',
                 ),
                 textAlign: TextAlign.center,
@@ -52,7 +52,7 @@ class HomePage extends StatelessWidget {
                   )
               ),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(height: 20,),
             OutlinedButton(
               onPressed: (){
                 Navigator.push(

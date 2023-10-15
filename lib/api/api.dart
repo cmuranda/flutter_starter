@@ -10,7 +10,8 @@ import 'package:redux/redux.dart';
 
 import '../auth/auth_model.dart';
 
-const String apiUrl = "192.168.56.1:8080";
+// const String apiUrl = "192.168.56.1:8080";
+const String apiUrl = "138.68.89.122:8080";
 const String apiVersion = '/v1';
 
 String getBasicAuthHeaders(String namePassword){

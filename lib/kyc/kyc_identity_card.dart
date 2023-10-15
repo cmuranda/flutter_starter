@@ -1,15 +1,13 @@
 import 'dart:io';
 
 import 'package:fin_app/kyc/kyc_document.dart';
+import 'package:fin_app/kyc/kyc_view_model.dart';
 import 'package:fin_app/store/application_state.dart';
-import 'package:fin_app/store/auth/auth_action.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:image_picker/image_picker.dart';
 
 class KYCIdentityCard extends StatefulWidget {
-
   const KYCIdentityCard({super.key});
 
   @override
@@ -20,8 +18,8 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
   final ImagePicker picker = ImagePicker();
   final List<XFile> uploadedImage = [];
   bool loading = false;
-  
-  updateUploadImage(XFile image){
+
+  updateUploadImage(XFile image) {
     setState(() {
       uploadedImage.add(image);
     });
@@ -32,7 +30,6 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
       loading = true;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +43,7 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
             minHeight: 10,
             semanticsLabel: "Login Information",
             value: .67,
-          )
-      ),
+          )),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
         child: Column(
@@ -64,55 +60,53 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
             ),
             if (uploadedImage.isEmpty)
               const Padding(
-              padding: EdgeInsets.symmetric(vertical: 9.0),
-              child: Text(
-                "Regulations require you to upload a national identity card. Don't worry, your data will stay safe and private",
-                style: TextStyle(fontSize: 18, fontFamily: 'Urbanist'),
+                padding: EdgeInsets.symmetric(vertical: 9.0),
+                child: Text(
+                  "Regulations require you to upload a national identity card. Don't worry, your data will stay safe and private",
+                  style: TextStyle(fontSize: 18, fontFamily: 'Urbanist'),
+                ),
               ),
-            ),
-
-            if (uploadedImage.isEmpty)
-              const SizedBox(height: 10),
+            if (uploadedImage.isEmpty) const SizedBox(height: 10),
             GestureDetector(
               onTap: () {
                 pickGalleryImage();
               },
-              child: uploadedImage.isEmpty?
-              SizedBox(
-                height: 200,
-                child: Card(
-                  borderOnForeground: true,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(35),
-                      side:
-                          BorderSide(width: 4, color: Colors.orange.shade600)),
-                  child: const Center(
-                      child: SizedBox(
-                          height: 65,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Icon(
-                                Icons.image,
-                                size: 30,
-                                color: Colors.grey,
-                              ),
-                              Text(
-                                "Select file",
-                                style: TextStyle(
-                                    fontFamily: 'Urbanist',
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.grey,
-                                    fontSize: 16),
-                              ),
-                            ],
-                          ))),
-                ),
-              ) :
-              SizedBox(
-                height: 350,
-                  child: Image.file(File(uploadedImage.last.path))
-              ),
+              child: uploadedImage.isEmpty
+                  ? SizedBox(
+                      height: 200,
+                      child: Card(
+                        borderOnForeground: true,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(35),
+                            side: BorderSide(
+                                width: 4, color: Colors.orange.shade600)),
+                        child: const Center(
+                            child: SizedBox(
+                                height: 65,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Icon(
+                                      Icons.image,
+                                      size: 30,
+                                      color: Colors.grey,
+                                    ),
+                                    Text(
+                                      "Select file",
+                                      style: TextStyle(
+                                          fontFamily: 'Urbanist',
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey,
+                                          fontSize: 16),
+                                    ),
+                                  ],
+                                ))),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 350,
+                      child: Image.file(File(uploadedImage.last.path))),
             ),
             const SizedBox(
               height: 20,
@@ -161,24 +155,25 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
                 child: Divider(
               color: Colors.grey.shade200,
             )),
-            StoreConnector<ApplicationState, VoidCallbackAction>(
-              converter: (store) => store.dispatch(AuthUploadingKYCImageAction(uploadedImage.last)),
-              builder: (context, converter) => Padding(
+            StoreConnector<ApplicationState, KYCViewModel>(
+              converter: (store) => KYCViewModel.converter(store),
+              builder: (context, viewModel) => Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: ElevatedButton(
                     onPressed: () {
-                      showLoading();
-                      Future.delayed(
-                          const Duration(milliseconds: 1500),
-                              () => {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                    const KYCDocument()
-                                )
-                            )
-                          });
+                      if (uploadedImage.isNotEmpty) {
+                        showLoading();
+                        viewModel.uploadKYCImage(uploadedImage.last);
+                        Future.delayed(
+                            const Duration(milliseconds: 1500),
+                            () => {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const KYCDocument()))
+                                });
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.orange,
@@ -186,10 +181,7 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
                     ),
                     child: const Text(
                       "Continue",
-                      style: TextStyle(
-                          color: Colors.white,
-                        fontSize: 18
-                      ),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
                     )),
               ),
             )
@@ -201,14 +193,14 @@ class _KYCIdentityCardState extends State<KYCIdentityCard> {
 
   void pickGalleryImage() async {
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-    if(image != null){
+    if (image != null) {
       updateUploadImage(image);
     }
   }
 
   void pickCameraImage() async {
     final XFile? image = await picker.pickImage(source: ImageSource.camera);
-    if(image != null){
+    if (image != null) {
       updateUploadImage(image);
     }
   }

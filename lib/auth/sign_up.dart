@@ -1,6 +1,7 @@
 
 import 'package:fin_app/auth/auth_model.dart';
 import 'package:fin_app/auth/auth_view_model.dart';
+import 'package:fin_app/auth/sign_in.dart';
 import 'package:fin_app/store/application_state.dart';
 import 'package:fin_app/store/auth/auth_action.dart';
 import 'package:flutter/material.dart';
@@ -93,9 +94,6 @@ class SignUpPage extends StatelessWidget{
                           onPressed: () {
                               FocusManager.instance.primaryFocus?.unfocus();
                             if (formKey.currentState!.validate()) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Signing Up')),
-                              );
                               var signUpParameters = SignUpModel(
                                   firstNameFieldController.text.trim(),
                                   lastNameFieldController.text.trim(),
@@ -111,6 +109,20 @@ class SignUpPage extends StatelessWidget{
                             style: TextStyle(
                               fontSize: 18
                             ),
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: (){
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => const SignInPage())
+                          );
+                        },
+                        child: const Text(
+                          "Sign In",
+                          style: TextStyle(
+                              decoration: TextDecoration.underline
                           ),
                         ),
                       ),

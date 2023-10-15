@@ -244,7 +244,8 @@ class CartItemsView extends StatelessWidget {
                                     icon: Icon(
                                       Icons.delete,
                                       color: Colors.orange.shade800,
-                                    )),
+                                    )
+                                ),
                               ],
                             ),
                           ),
@@ -257,7 +258,6 @@ class CartItemsView extends StatelessWidget {
                     onPressed: (){
                       if(viewModel.getCartItemsCount() > 0) {
                         viewModel.takeUpProducts();
-
                       }
                     },
                     style: OutlinedButton.styleFrom(

@@ -33,7 +33,7 @@ class AuthMiddleware implements MiddlewareClass<ApplicationState>{
         store.dispatch(AuthSuccessAction(user));
         store.dispatch(NavigateToAction.replace("/products-home"));
       } on ApiException catch (e){
-        store.dispatch(NavigateToAction.replace("/products-home"));
+        displayToastMessage(e.message);
         store.dispatch(AuthFailedAction(e.message));
       }
     }
@@ -47,8 +47,9 @@ class AuthMiddleware implements MiddlewareClass<ApplicationState>{
             signInResult.loginAccessKey
         );
         store.dispatch(AuthSuccessAction(user));
-        store.dispatch(NavigateToAction.push("/products-home"));
+        store.dispatch(NavigateToAction.push("/kyc-identity"));
       } on ApiException catch (e){
+        displayToastMessage(e.message);
         store.dispatch(AuthFailedAction(e.message));
       }
     }
@@ -61,11 +62,7 @@ void checkUserLoggedIn(Store<ApplicationState> store){
     displayToastMessage("Login first to continue");
     store.dispatch(
         NavigateToAction(
-            "/sign-in",
-            arguments: {
-              "message": "Login first to continue",
-              "redirect": "/cart"
-            }
+            "/sign-in"
         )
     );
     return;

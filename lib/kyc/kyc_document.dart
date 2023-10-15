@@ -49,8 +49,8 @@ class _KYCDocumentState extends State<KYCDocument> {
                   if (loading)
                     Container(
                       color: Colors.white,
-                      padding: EdgeInsets.all(100),
-                      child: CircularProgressIndicator(),
+                      padding: const EdgeInsets.all(100),
+                      child: const CircularProgressIndicator(),
                     ),
                 ],
               ),
