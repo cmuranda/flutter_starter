@@ -1,19 +1,47 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:local_auth/local_auth.dart';
 
 import 'auth/sign_in.dart';
 import 'auth/sign_up.dart';
 import 'products/product_home_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String title;
   const HomePage({super.key, required this.title});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final auth = LocalAuthentication();
+  bool _showPageContent = false;
+  String biometricAuthMessage = "Authenticate using biometrics to continue";
+
+  @override
+  void initState(){
+    super.initState();
+    auth.isDeviceSupported().then(
+        (bool isSupported){
+          setState(() {
+            _showPageContent = !isSupported;
+          });
+          if(isSupported){
+            authenticateBiometrics();
+          }
+        }
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        child: Column(
+        child: _showPageContent?
+          Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 60,),
@@ -93,8 +121,29 @@ class HomePage extends StatelessWidget {
             //   child: const Text("View terms and conditions"),
             // )
           ],
-        ),
+        ):
+            Center(
+                child: Text(biometricAuthMessage, style: const TextStyle(fontSize: 18),)
+            )
       ),
     );
   }
+
+  void authenticateBiometrics() async{
+    try {
+      var authenticated = await auth.authenticate(
+          localizedReason: 'Please authenticate to show account balance',
+          options: const AuthenticationOptions(useErrorDialogs: false));
+      setState((){
+        _showPageContent = authenticated;
+        if(!authenticated){
+          biometricAuthMessage = "Biometric authentication failed.";
+        }
+      });
+    } on PlatformException catch (e) {
+      print(e);
+    }
+  }
 }
+
+

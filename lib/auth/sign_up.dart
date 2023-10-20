@@ -35,7 +35,6 @@ class SignUpPage extends StatelessWidget{
           )
 
       ),
-
       body: StoreConnector<ApplicationState, AuthViewModel>(
           converter: (store) => AuthViewModel.converter(store),
           builder: (context, viewModel) => viewModel.isLoading?

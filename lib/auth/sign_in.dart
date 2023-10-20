@@ -3,7 +3,6 @@ import 'package:fin_app/auth/auth_model.dart';
 import 'package:fin_app/auth/auth_view_model.dart';
 import 'package:fin_app/auth/sign_up.dart';
 import 'package:fin_app/store/application_state.dart';
-import 'package:fin_app/store/auth/auth_action.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
